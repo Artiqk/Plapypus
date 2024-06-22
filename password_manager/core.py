@@ -1,22 +1,35 @@
 from termcolor import colored
-from password_manager.utils import load_json_data, save_json_data, does_website_exist
+from password_manager.utils import load_json_data, save_json_data, credentials_already_exist
 
 
-def add_website(filename, new_website_data):
+def add_website(filename, website, username, password):
     data = load_json_data(filename)
     
-    if does_website_exist(data, new_website_data):
-        print(colored(f'`{new_website_data["username"]}` for {new_website_data["website"]} already exists.', 'red'))
+    if website in data and credentials_already_exist(data, website, username):
+        print(colored(f'`{username}` for {website} already exists.', 'red'))
         return
-        
-    data.append(new_website_data)
     
-    print(colored(f'Adding `{new_website_data["username"]}` for {new_website_data["website"]}...', 'blue'))
+    if website not in data:
+        data[website] = []
+    
+    data[website].append({'username': username, 'password': password})
     
     if save_json_data(filename, data):
-        print(colored(f'`{new_website_data["username"]}` for {new_website_data["website"]} has successfully been written.', 'green'))
+        print(colored(f'`{username}` for {website} has successfully been written.', 'green'))
 
 
 def add_websites(filename, new_website_data_list):
     for new_website_data in new_website_data_list:
-        add_website(filename, new_website_data)
+        add_website(filename, **new_website_data)
+        
+
+def list_websites(filename):
+    data = load_json_data(filename)
+    
+    for website, credentials in data.items():
+        print(colored(website, 'blue'))
+        for credential in credentials:
+            print('\t=>', end=' ')
+            print(colored(f'{credential["username"]}', 'green'), end=':')
+            print(colored(f'{credential["password"]}', 'red'))
+        print('============================')

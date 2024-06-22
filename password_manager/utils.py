@@ -6,7 +6,7 @@ def load_json_data(filename):
         with open(filename, 'r') as file:
             existing_data = json.load(file)
     except (FileNotFoundError, json.JSONDecodeError):
-        existing_data = []
+        existing_data = {}
     
     return existing_data
 
@@ -22,9 +22,8 @@ def save_json_data(filename, data):
     return True
 
 
-def does_website_exist(data, new_website_data):
-    if any(existing_website_data['website'] == new_website_data['website'] and existing_website_data['username'] == new_website_data['username'] for existing_website_data in data):
-        return True
-        
-    return False
+def credentials_already_exist(website_data, website, username):
+    # website = new_website_data['website']
+    # username = new_website_data['username']
+    return any(username == data['username'] for data in website_data[website])
 

@@ -7,17 +7,22 @@ data = [{
     'username': 'user',
     'password': 'pass'
 }, {
+    'website': 'minecraft.com',
+    'username': 'steve',
+    'password': 'herobrine'
+}, {
     'website': 'hackthebox.com',
     'username': 'pwner',
     'password': 'he11ow0rld!'
 }, {
     'website': 'minecraft.com',
-    'username': 'steve',
-    'password': 'herobrine'
+    'username': 'herobrine', 
+    'password': 'pass' 
 }]
 
 def main():
-    add_websites(FILENAME, data)
+    # add_websites(FILENAME, data)
+    list_websites(FILENAME)
 
 
 if __name__ == '__main__':
