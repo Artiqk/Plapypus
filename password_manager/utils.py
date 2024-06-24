@@ -16,14 +16,14 @@ def save_json_data(filename, data):
         with open(filename, 'w') as file:
             json.dump(data, file)
     except IOError as e:
-        print(colored(f'Error writing data to {filename}: {e}', 'red'))
         return False
     
     return True
 
 
 def credentials_already_exist(website_data, website, username):
-    # website = new_website_data['website']
-    # username = new_website_data['username']
     return any(username == data['username'] for data in website_data[website])
 
+
+def find_index_by_key_value(lst, key, value):
+    return next((i for i, d in enumerate(lst) if d.get(key) == value), -1)
