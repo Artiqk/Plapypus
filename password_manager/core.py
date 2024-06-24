@@ -37,19 +37,38 @@ class CredentialManager:
                 print(colored(f'{credential["username"]}', 'green'), end=':')
                 print(colored(f'{credential["password"]}', 'red'))
             print()
+
+    
+    def update(self, website, username, new_password):
+        data = load_json_data(self.filename)
         
+        if website not in data:
+            raise WebsiteNotFoundError(website)
+        
+        index_to_update = find_index_by_key_value(data[website], 'username', username)
+        
+        if index_to_update == -1:
+            raise CredentialNotFoundError(username, website)
+        
+        data[website][index_to_update]['password'] = new_password
+        
+        return save_json_data(self.filename, data)
+
 
     def remove(self, website, username):
         data = load_json_data(self.filename)
         
-        if website in data:
-            index_to_remove = find_index_by_key_value(data[website], 'username', username)
-            
-            if index_to_remove != -1:
-                data[website].pop(index_to_remove)
-            else:
-                raise CredentialNotFoundError(username, website)
-        else:
+        if website not in data:
             raise WebsiteNotFoundError(website)
+        
+        index_to_remove = find_index_by_key_value(data[website], 'username', username)
+        
+        if index_to_remove == -1:
+            raise CredentialNotFoundError(username, website)
+            
+        data[website].pop(index_to_remove)
+        
+        if not data[website]:
+            del data[website]
         
         return save_json_data(self.filename, data)
