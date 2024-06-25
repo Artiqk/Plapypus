@@ -6,6 +6,8 @@ from cryptography.fernet import Fernet
 import json
 import base64
 import os
+import string
+import random
 
 
 def derive_key(password: str, salt: bytes) -> bytes:
@@ -65,3 +67,11 @@ def credentials_already_exist(website_data: dict, website: str, username: str) -
 
 def find_index_by_key_value(lst: list, key: str, value: str) -> int:
     return next((i for i, d in enumerate(lst) if d.get(key) == value), -1)
+
+
+def generate_password(length: int, use_special_chars: bool = False) -> str:
+    characters = string.ascii_letters + string.digits
+    if use_special_chars:
+        characters += string.punctuation
+    password = ''.join(random.choice(characters) for _ in range(length))
+    return password
