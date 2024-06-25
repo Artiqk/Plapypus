@@ -10,7 +10,13 @@ class CredentialManager:
         
         
     def load_data(self, master_password: str) -> dict:
-        return load_encrypted_json_data(self.filename, master_password)
+        try:
+            data = load_encrypted_json_data(self.filename, master_password)
+        except ValueError:
+            print(colored('Master password is incorrect.', 'red'))
+            return {}
+        
+        return data
     
     
     def save_data(self, data: dict, master_password: str) -> None:
@@ -18,7 +24,7 @@ class CredentialManager:
         del master_password
 
 
-    def add(self, website: str, username: str, master_password: str, password: str = generate_password(32, True)) -> bool:
+    def add(self, website: str, username: str, password: str, master_password: str) -> bool:
         data = self.load_data(master_password)
         
         if website in data and credentials_already_exist(data, website, username):

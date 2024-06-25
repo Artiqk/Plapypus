@@ -2,12 +2,12 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, InvalidToken
 import json
 import base64
 import os
 import string
-import random
+import secrets
 
 
 def derive_key(password: str, salt: bytes) -> bytes:
@@ -44,6 +44,9 @@ def load_encrypted_json_data(filename: str, password: str) -> dict:
     except FileNotFoundError:
         return {}
     
+    except InvalidToken:
+        raise ValueError('Invalid master password provided')
+    
     except Exception as e:
         raise RuntimeError('Failed to decrypt data') from e
     
@@ -73,5 +76,5 @@ def generate_password(length: int, use_special_chars: bool = False) -> str:
     characters = string.ascii_letters + string.digits
     if use_special_chars:
         characters += string.punctuation
-    password = ''.join(random.choice(characters) for _ in range(length))
+    password = ''.join(secrets.choice(characters) for _ in range(length))
     return password
