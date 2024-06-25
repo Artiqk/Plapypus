@@ -1,4 +1,4 @@
-# Password Manager
+# Plapypus
 
 This Password Manager is a secure tool designed to store, retrieve, update, and manage your passwords effectively. It uses strong encryption to ensure that all credentials are securely stored and provides a command-line interface for easy interaction.
 
