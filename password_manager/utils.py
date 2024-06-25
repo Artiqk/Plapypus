@@ -1,5 +1,4 @@
 import json
-from termcolor import colored
 
 def load_json_data(filename):
     try:
