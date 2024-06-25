@@ -3,6 +3,7 @@
 import argparse
 from password_manager.core import CredentialManager
 from password_manager.utils import generate_password
+from termcolor import colored
 import getpass
 
 
@@ -16,6 +17,7 @@ def main():
     add_parser = subparsers.add_parser('add', help='Add a new credential')
     add_parser.add_argument('website', type=str, help='Website to add a credential for')
     add_parser.add_argument('username', type=str, help='Username for the website')
+    add_parser.add_argument('--password', nargs='?', const=True, default=False, help='Prompt for password if not provided')
 
     # List command
     list_parser = subparsers.add_parser('list', help='List all credentials')
@@ -39,17 +41,18 @@ def main():
 
     # Handle commands
     if args.command == 'add':
-        manager.add(args.website, args.username, master_password)
-        print("Credential added successfully.")
+        password = getpass.getpass(f'Enter the password for `{args.username}`: ') if args.password is True else generate_password(32, True)
+        manager.add(args.website, args.username, password, master_password)
+        print(colored(f'Credentials successfully added for {args.website} => {args.username}:{password}', 'green'))
     elif args.command == 'list':
         manager.list(master_password)
     elif args.command == 'update':
         new_password = getpass.getpass(f'Enter the new password for `{args.username}`: ')
         manager.update(args.website, args.username, new_password, master_password)
-        print("Credential updated successfully.")
+        print(colored(f'Credentials successfully updated for {args.website} => {args.username}:{new_password}', 'green'))
     elif args.command == 'remove':
         manager.remove(args.website, args.username, master_password)
-        print("Credential removed successfully.")
+        print(colored('Credential removed successfully.', 'green'))
 
 
 if __name__ == "__main__":
