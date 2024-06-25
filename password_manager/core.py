@@ -5,10 +5,10 @@ from password_manager.exceptions import *
 
 class CredentialManager:
     
-    def __init__(self, filename):
+    def __init__(self, filename: str) -> None:
         self.filename = filename
 
-    def add(self, website, username, password):
+    def add(self, website: str, username: str, password: str) -> bool:
         data = load_json_data(self.filename)
         
         if website in data and credentials_already_exist(data, website, username):
@@ -22,15 +22,16 @@ class CredentialManager:
         return save_json_data(self.filename, data)
 
 
-    def add_multiple(self, new_website_data_list):
+    def add_multiple(self, new_website_data_list: list) -> None:
         for new_website_data in new_website_data_list:
             self.add_credentials_for_website(**new_website_data)
         
 
-    def list(self):
+    def list(self) -> None:
         data = load_json_data(self.filename)
         
-        for website, credentials in data.items():
+        for website in sorted(data.keys()):
+            credentials = data[website]
             print(colored(website, 'blue'))
             for credential in credentials:
                 print('\t=>', end=' ')
@@ -39,7 +40,7 @@ class CredentialManager:
             print()
 
     
-    def update(self, website, username, new_password):
+    def update(self, website: str, username: str, new_password: str) -> bool:
         data = load_json_data(self.filename)
         
         if website not in data:
@@ -55,7 +56,7 @@ class CredentialManager:
         return save_json_data(self.filename, data)
 
 
-    def remove(self, website, username):
+    def remove(self, website: str, username: str) -> bool:
         data = load_json_data(self.filename)
         
         if website not in data:
